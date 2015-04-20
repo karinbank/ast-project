@@ -1,114 +1,120 @@
 import React from 'react';
 
-var tdStyle = {
-  backgroundColor:"Blue",
-  color: "white",
-  fontWeight:"bold",
-  textAlign: "center",
+
+
+
+let flexBoxGame = {
+display: "flex",
+alignItems: "center",
+justifyContent: "center",
+alignContext: "center",
+flexDirection: "column",
+flexWrap: "wrap",
+alignContent: "center",
+height: "50%",
+width: "50%",
+margin: "auto",
 };
 
-var changeStyle ={
-    color: "white",
-    backgroundColor:"green",
-    width: "60px",
-    height:"60px",
-    fontWeight: "bold",
-    border: "none",
-    textAlign: "center",
+let flexBoxSwitch = {
+display: "flex",
+alignItems: "center",
+justifyContent: "center",
+alignContext: "center",
+flexDirection: "column",
+flexWrap: "wrap",
+alignContent: "center",
+width: "50%",
+height: "50%",
+margin: "auto"
 };
 
-var EditableCell = React.createClass({
-    getInitialState: function () {
-        return { 
-            isEditMode: false,
-            data: ""
-        };
-    },
-    componentWillMount: function () {
-        this.setState({
-            isEditMode: this.props.isEditMode,
-            data: this.props.data
-        });
-    },
-    handleClick: function (e) {
-        this.setState({isEditMode: true});
-        this.setState({data: "Miss!"});
-        alert("You missed the boat!");
-    },
+let switchButtonStyle = {
+display: "flex",
+alignItems: "center",
+justifyContent: "center",
+alignContext: "center",
+flexDirection: "column",
+flexWrap: "wrap",
+alignContent: "center",
+width: "150px",
+height: "150px",
+textAlign: "center",
+border: "0,5",
+color: "black",
+fontWeight: "bold",
+backgroundColor: "#00FFFF"
+};
 
- 
-    render: function () {
-        var BasicCell;
-        if (this.state.isEditMode) {
-            BasicCell = <input value={this.state.data} style={changeStyle}/>
-        }
-        else {
-            BasicCell = <div onClick={this.handleClick}>{this.state.data}</div>
-        }
-        return (
-            <td style={tdStyle} height="60" width="60" >{EditableCell}</td>
-            );
+let gameButtonStyle = {
+color: "black",
+backgroundColor: "#008B8B",
+width: "150px",
+height: "150px",
+textAlign: "center",
+border: "0,5",
+fontWeight: "bold"
+}
 
+
+
+class GameBoardCell extends React.Component {
+    handleClick(cellState){
+
+        let message = cellState ? "hit" : "miss";
+        alert(message);
+        return(message);
     }
-});
 
-var Positions = React.createClass({
-    render: function() {
-        return (
-            <tr>
-                <EditableCell data={this.props.A}/>
-                <EditableCell data={this.props.B}/>
-                <EditableCell data={this.props.C}/>
-                <EditableCell data={this.props.D}/>
-            </tr>
-            );
-    }
-});
-
-var Grid = React.createClass({
-    getInitialState: function() {
-        return {data: this.props.data};
-    },
-   render: function() {
-       var positions = this.state.data.map(function (position) {
-           return <Positions
-           A={position.A}
-           B={position.B}
-           C={position.C}
-           D={position.D}/>;
-        });
+  render(){
     return (
-    <tbody>{positions}</tbody>
-    );
-   }
-});
+      <button style={gameButtonStyle} onClick={this.handleClick.bind(this, this.props.state) }>GameBoardCell</button>
+    )
+  }
+}
 
-React.render(
-    <table>
-        <thead>
-            <tr>
-                <th></th> <th></th> <th></th> <th></th>
-                <th></th> <th></th> <th></th> <th></th>
-                <th></th> <th></th> <th></th> <th></th>
-                <th></th> <th></th> <th></th> <th></th>
-            </tr>
-        </thead>
-        <Grid data={[{"A":"sea","B":"sea","C":"sea","D":"sea"},{"A":"sea","B":"sea","C":"sea","D":"sea"},{"A":"sea","B":"sea","C":"sea","D":"sea"},{"A":"sea","B":"sea","C":"sea","D":"sea"}]} />
-     </table>,
-    document.body
-);
+class SwitchBoardCell extends React.Component {
+  render(){
+    let state = this.props.state;
+    let index = this.props.index;
+    return (
+      <button style={switchButtonStyle} onClick={ this.props.toggleState.bind(this, index) }>{ this.props.state ? 'on' : 'off' }</button>
+    )
+    }
+}
 
+class Game extends React.Component {
+  constructor(props){
+        super(props);
+        this.state = {
+            board: [0,1,0,1,0,1,0,1]
+        }
+    }
 
-//Well, I guess it went wrong when i tried to make the 'hit' option work. Your cells 
-//should either has a state of on or off. Can't seem to figure out how
-//to change that. Plus, I was finding it really hard to get started, so I
-// looked at the assignment Wiha made, to see if it would get clearer to made
-// in some ways it did, in others it confused me more, when i took little parts
-//to get started, it gave me loads of syntax errors in the terminal,
-//some of them i understood, since you're taking pieces from a bigger unit,
-//but some of them where magic to me, even when I simplified it. 
-//Guess I', just not far enough with react yet, to make something big like this.
-//I'll obviously work on that in the next week
+    toggleState(index){
+        console.log(index);
+        let board = this.state.board;
+        board[index] = !board[index];
+        this.setState({board})
+    }
 
-//Plus, in the last 3 hours I've broken far more than I made, and I can't
-//seem to fix it. So I'll stop for today, this only leave me frustrated.
+  render(){     
+    let board = this.state.board;
+    
+    return (
+      
+      <section className="game" backgroundImage= "url"("http://i.telegraph.co.uk/multimedia/archive/00429/travel-graphics-200_429074a.jpg")>
+      <h1>Battleship. At least, that is what it once will be. </h1>
+          <section className="gameboard" style= {flexBoxGame}>
+            { board.map((value, index) => <GameBoardCell key={ index } index={ index } state={ value }/>) }
+          </section>
+          <section className="switchboard" style={flexBoxSwitch}>
+            { board.map((value, index) => <SwitchBoardCell toggleState={ this.toggleState.bind(this) } key={ index } index={ index } state={ value }/>) }
+          </section>        
+        </section>
+        
+    )
+  }
+}
+
+React.render(<Game />, document.body);
